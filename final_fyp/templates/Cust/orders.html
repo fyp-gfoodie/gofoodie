@@ -1,0 +1,112 @@
+{% extends 'basee.html' %}
+{% load static %}
+
+{% block css %}
+<style>
+
+.form-container {
+	width: 100vw;
+	height: 100vh;
+	background-color: #7b2cbf;
+	display: flex;
+   	justify-content: center;
+	align-items: center;
+}
+
+.upload-button {
+	font-family: 'Montserrat';
+	background-color: #e09410c8;
+	color: #f7fff7;
+	display: flex;
+	align-items: center;
+	font-size: 18px;
+	border: none;
+	border-radius: 20px;
+	margin: 10px;
+	padding: 7.5px 50px;
+	cursor: pointer;
+}
+</style>
+
+{% endblock  %}
+
+{% block content %}
+<section class="menu" id="menu">
+    <div class='parent'>
+     <div class='allmenu'>All Orders</div>
+    </div>
+     <div class="menu-content">
+      {% for order in make_orders %}
+        <div class="card" style="width: 18rem;">
+            <div class="card-body">
+              <h5 class="card-title">Order ID: {{ order.id }}</h5>
+              <div class="row">
+                <div class="col"></div>
+                <div class="col">{{ order.status }}</div>
+              </div>
+              <div class="row">
+                <div class="col">Order Amount</div>
+                <div class="col">Nu. {{ order.bill }}</div>
+              </div>
+              <div class="row">
+                <div class="col">Order Time</div>
+                <div class="col">Order</div>
+              </div>
+              <div class="row">
+                <div class="col"></div>
+                <div class="col"><button class="btn btn-success" data-bs-target="#exampleModalToggle" data-bs-toggle="modal">Payment</button></div>
+              </div>
+            </div>
+          </div>
+
+
+          <div class="modal fade" id="exampleModalToggle" aria-hidden="true" aria-labelledby="exampleModalToggleLabel" tabindex="-1">
+            <div class="modal-dialog modal-dialog-centered">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h1 class="modal-title fs-5" id="exampleModalToggleLabel">Qr code for payment</h1>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                  Show a second modal and hide this one with the button below.
+                  <img id = 'qr' src="{% static 'images/qr.png' %}" alt="">
+                </div>
+                <div class="modal-footer">
+                  <a href="{% static 'images/qr.png' %}" download><Button class="btn btn-warning">Download</Button></a>
+                  <button class="btn btn-primary" data-bs-target="#exampleModalToggle{{order.id}}" data-bs-toggle="modal">Next</button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="modal fade" id="exampleModalToggle{{order.id}}" aria-hidden="true" aria-labelledby="exampleModalToggleLabel2" tabindex="-1">
+            <div class="modal-dialog modal-dialog-centered">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h1 class="modal-title fs-5" id="exampleModalToggleLabel2">Upload the payment screenshot</h1>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form action="{% url 'payment' user.pk order.id%}" method="POST" enctype="multipart/form-data">
+                      {% csrf_token %}
+                        <div class="upload-files-container">
+                          <input type="file" name="scrn" class="form-control">
+                            <button type="submit" class="upload-button"> Upload </button>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                  <button class="btn btn-primary" data-bs-target="#exampleModalToggle" data-bs-toggle="modal">Back to first</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+
+{% endfor %}
+
+     </div>
+
+ </section>
+
+
+{% endblock %}

@@ -1,0 +1,200 @@
+{% extends './owner_base.html'%}
+{% block css %}
+<style>
+    .card{
+        width: 65%;
+        margin-left: 15%;
+    }
+    .btn{
+        margin-top: 5%;
+    }
+</style>
+
+{% endblock %}
+{% block content %}
+
+{% if data %}
+
+<div class="container mt-5" >
+    <main id="main" class="main">
+        <div class="card">
+
+            <h5 class="card-header text-center">Update Manager</h5>
+            <div style="text-align: right;">
+                <form action="{% url 'deletemanager' %}" method="POST">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-danger" style="width: 20%;margin-right: 5%;" >Delete</button>
+                </form>
+
+            </div>
+
+            <div class="card-body">
+                <form role="form" data-toggle="validator" action="" method="POST"  id="regForm">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label>First Name</label>
+                        <input type="text" class="form-control" data-error="You must have a name." id="inputName" name="first_name" placeholder="{{data.first_name}}" >
+                        <!-- Error -->
+                        <div class="help-block with-errors"></div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Last Name</label>
+                        <input type="text" class="form-control" data-error="You must have a name." id="inputName" name="last_name" placeholder="{{data.last_name}}" >
+                        <!-- Error -->
+                        <div class="help-block with-errors"></div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Email</label>
+                        <input type="email" class="form-control" id="inputEmail" placeholder="{{data.email}}" name="email"  >
+                        <!-- Error -->
+                        <div class="help-block with-errors"></div>
+                        <p id="emailValidText" style="font-size:10px; color: rgba(255, 0, 0, 0.966);"></p>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Contact Number</label>
+                        <input type="tel" class="form-control" id="tel" placeholder="{{data.contact_number}}" name="contact" >
+                        <!-- Error -->
+                        <div class="help-block with-errors"></div>
+                        <p id="noMobileNumberText" style="font-size:10px; color: rgba(255, 0, 0, 0.966);"></p>
+                    </div>
+
+                    <div class="form-group">
+                        <button type="submit" name="edit" class="btn btn-block btn-warning">Update</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </main>
+
+
+
+
+</div>
+
+{% else %}
+<div class="container mt-5">
+    <main id="main" class="main">
+        <div class="card">
+            <h5 class="card-header text-center">Add Manager</h5>
+            <div class="card-body">
+                <form role="form" data-toggle="validator" action="" method="POST" id="regForm">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label>First Name</label>
+                        <input type="text" class="form-control" data-error="You must have a name." id="inputName" name="first_name" placeholder="Name" required>
+                        <!-- Error -->
+                        <div class="help-block with-errors"></div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Last Name</label>
+                        <input type="text" class="form-control" data-error="You must have a name." id="inputName" name="last_name" placeholder="Name" required>
+                        <!-- Error -->
+                        <div class="help-block with-errors"></div>
+                    </div>
+                    <div class="form-group">
+                        <label>Email</label>
+                        <input type="email" class="form-control" id="inputEmail" placeholder="Email" name="email" onchange="validateReg()" required>
+                        <!-- Error -->
+                        <div class="help-block with-errors"></div>
+                        <p id="emailValidText" style="font-size:10px; color: rgba(255, 0, 0, 0.966);"></p>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Contact Number</label>
+                        <input type="tel" class="form-control" id="tel" placeholder="contact number" name="contact" onchange="validateReg()" required>
+                        <!-- Error -->
+                        <div class="help-block with-errors"></div>
+                        <p id="noMobileNumberText" style="font-size:10px; color: rgba(255, 0, 0, 0.966);"></p>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Password</label>
+                        <div class="form-group">
+                            <input type="password" data-minlength="4" class="form-control" id="inputPassword"
+                                data-error="Have atleast 4 characters" placeholder="Password" name="password" required />
+                            <!-- Error -->
+                            <div class="help-block with-errors"></div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <button type="submit" class="btn btn-block btn-warning" name="add" >Add</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </main>
+
+</div>
+{%endif%}
+
+{% endblock %}
+
+{% block script %}
+<script>
+
+    // Email ID, username, password, and confirm password check
+    const regForm = document.querySelector('#regForm');
+    const emailReg = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
+
+    let mobileNumber = regForm.elements.namedItem('contact')
+    let email = regForm.elements.namedItem('email')
+    let passOne = regForm.elements.namedItem('password')
+    let passTwo = regForm.elements.namedItem('confirmPassword')
+	let button = document.getElementById('submit')
+
+    mobileNumber.addEventListener('input', validateReg);
+    email.addEventListener('input', validateReg);
+
+    passOne.addEventListener('input', validateReg);
+    passTwo.addEventListener('input', validateReg);
+
+    function validateReg(e) {
+
+        let target = e.target;
+
+        if (target.name == 'email') {
+            let emailValidity = document.getElementById('emailValidText')
+            emailValidity.textContent = 'Please enter a valid email address'
+            emailValidity.classList.remove('valid')
+            emailValidity.classList.add('invalid')
+			button.disabled = true;
+
+            if (emailReg.test(target.value)) {
+                emailValidity.textContent = ''
+                emailValidity.classList.add('valid')
+                emailValidity.classList.remove('invalid')
+				button.disabled = false;
+            }
+        }
+        if (target.name == 'contact') {
+            let mobileValidity = document.getElementById('noMobileNumberText')
+            if (target.value >= 16000000 && target.value <= 17999999 || target.value >= 77000000 && target.value <= 77999999) {
+                mobileValidity.textContent = ''
+                mobileValidity.classList.add('valid')
+                mobileValidity.classList.remove('invalid')
+				button.disabled = true;
+            } else {
+                mobileValidity.textContent = 'Invalid mobile number. should start either with 17 or 77. Do not include "+975"'
+                mobileValidity.classList.remove('valid')
+                mobileValidity.classList.add('invalid')
+				button.disabled = false;
+            }
+		}
+
+
+    }
+
+
+</script>
+<style>
+     .valid{
+        color: green !important;
+    }
+</style>
+{% endblock %}
+

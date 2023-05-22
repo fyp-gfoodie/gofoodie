@@ -1,0 +1,55 @@
+{% extends 'basee.html'%}
+
+{% block content %}
+
+		<!---food menu--->
+	<section class="menu" id="menu">
+       <div class='parent'>
+		<div class='allmenu'>All Menu</div>
+		{% if user.role == 'manager' %}
+		<div class="addbutton"><a href="{% url 'create_menu' user.pk %}" style="text-decoration: none; color: #fff;"><i class="fa fa-plus-circle"></i>&nbsp; &nbsp;Add Menu</a></div>
+		{% endif %}
+	   </div>
+		<div class="menu-content">
+				{% for i in data %}
+				<div>
+					<div class="box">
+						<div class="box-content">
+							<div class="box-img">
+								<img src="{{ i.image.url }}">
+							</div>
+							<div class="box-text">
+								<h4>{{i.item_name}}</h4>
+								<p>{{i.description}}</p>
+								<h6>Nu. {{i.price}}</h6>
+							</div>
+						</div>
+					</div>
+					{% if user.role == 'customer' %}
+					<div class='edbutton'>
+						<form action="{% url 'order' user.pk i.pk %}" method="POST">
+							{% csrf_token %}
+							<button class='btn btn-warning edit' style="border: none;">Add to cart</button>
+						</form>
+
+					</div>
+					{% else %}
+					<div class='edbutton'>
+							<a href="{% url 'update' user.pk i.pk%}"><button class='edit' style="border: none;" type="submit">Edit</button></a>
+						<form action="{% url 'delete' user.pk%}" method="POST">
+							{% csrf_token %}
+							<button type="submit" class="delete" style="border:none" value="{{i.pk}}" name="delete_id">Delete</button>
+						</form>
+
+					</div>
+					{% endif %}
+				</div>
+				{% endfor %}
+		</div>
+
+	</section>
+
+
+
+
+{% endblock %}

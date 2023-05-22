@@ -1,0 +1,213 @@
+{% load static %}
+<!Doctype html>
+<html lang="en">
+  <head>
+  	<title>Sign Up</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ" crossorigin="anonymous">
+
+	<link href="https://fonts.googleapis.com/css?family=Lato:300,400,700&display=swap" rel="stylesheet">
+
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+
+	<link rel="stylesheet" href="{% static 'css/style2.css' %}">
+
+	<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/css/alertify.min.css"/>
+	<!-- Default theme -->
+	<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/css/themes/default.min.css"/>
+
+	</head>
+	<body>
+	<section class="ftco-section">
+		<div class="container">
+			<div class="row justify-content-center">
+				<div class="col-md-6 text-center mb-5">
+
+				</div>
+			</div>
+			<div class="row justify-content-center">
+				<div class="col-md-7 col-lg-5">
+					<div class="wrap">
+						<div class="login-wrap p-4 p-md-5">
+			      	<div class="d-flex">
+						<div class="w-100" style="text-align: center;">
+							<h3 class="mb-4">Sign Up <img src="{% static 'images/FYP_Logo.png' %}" alt="" class="img" style="width:30%;height:16%;"></h3>
+						</div>
+
+			      	</div>
+						<form action="" method="POST" class="signin-form" id="regForm">
+						{% csrf_token %}
+			      		<div class="form-group mt-4">
+			      			<input type="text" class="form-control" name="Firstname" required>
+			      			<label class="form-control-placeholder" for="username">First name</label>
+			      		</div>
+
+						<div class="form-group mt-4">
+							<input type="text" class="form-control" name="Lastname" required>
+							<label class="form-control-placeholder" for="Lastname">Last name <span style="font-size:10px; color: rgba(255, 0, 0, 0.966);">*</span></label>
+						</div>
+
+						<div class="form-group mt-4">
+							<input type="email" id="email" class="form-control" name="email" onchange="validateReg()" required>
+							<label class="form-control-placeholder" for="username">Email</label>
+							<p id="emailValidText" style="font-size:10px; color: rgba(255, 0, 0, 0.966);"></p>
+						</div>
+
+						<div class="form-group mt-4">
+							<input type="text" class="form-control" name="contact" onchange="validateReg()" required>
+							<label class="form-control-placeholder" for="username">Contact Number</label>
+							<p id="noMobileNumberText" style="font-size:10px; color: rgba(255, 0, 0, 0.966);"></p>
+						</div>
+
+						<div class="form-group mt-4">
+							<input id="password" type="password" class="form-control"  name="password" required>
+							<label class="form-control-placeholder" for="password">Password</label>
+							<span toggle="#password" class="fa fa-fw fa-eye field-icon toggle-password"></span>
+							<p id="password1ValidText" style="font-size:10px; color: rgba(255, 0, 0, 0.966);"></p>
+						  </div>
+
+		            <div class="form-group mt-4">
+		              <input id="password-field" type="password" class="form-control" name='confirmPassword' required>
+		              <label class="form-control-placeholder" for="password">Confirm Password</label>
+		              <span toggle="#password-field" class="fa fa-fw fa-eye field-icon toggle-password"></span>
+					  <p id="password2ValidText" style="font-size:10px; color: rgba(255, 0, 0, 0.966);"></p>
+		            </div>
+
+		            <div class="form-group mt-4">
+		            	<button type="submit" id="submit" class="form-control btn btn-primary rounded submit px-3">Sign Up</button>
+		            </div>
+
+		            </div>
+		          </form>
+		          <p class="text-center">Already have an account? <a href="{% url 'signin' %}">Signin</a></p>
+		        </div>
+		      </div>
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<script src="{% static 'js/jquery.min.js'%}"></script>
+  <script src="{% static 'js/popper.js' %}"></script>
+  <script src="{% static 'js/bootstrap.min.js' %}"></script>
+  <script src="{% static 'js/main.js' %}"></script>
+  <script src="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/alertify.min.js"></script>
+  <script>
+		"{% for flashmsg in messages %}"
+			alertify.set('notifier','position', 'top-center');
+			"{% if flashmsg.tags == 'success' %}"
+				alertify.success('{{ flashmsg }}');
+			"{% elif flashmsg.tags == 'warning' %}"
+				alertify.warning('{{ flashmsg }}');
+			"{% elif flashmsg.tags == 'error' %}"
+				alertify.error('{{ flashmsg }}');
+			" {% else %}"
+				alertify.message('{{ flashmsg }}');
+			"{% endif %}"
+		"{% endfor %}"
+
+
+
+		// Validations
+
+    // Email ID, username, password, and confirm password check
+    const regForm = document.querySelector('#regForm');
+    const passReg = /^(?=.*?[a-z])(?!.*?[=?<>()'"\/\&]).{8,20}$/;
+    const emailReg = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
+
+    let mobileNumber = regForm.elements.namedItem('contact')
+    let email = regForm.elements.namedItem('email')
+    let passOne = regForm.elements.namedItem('password')
+    let passTwo = regForm.elements.namedItem('confirmPassword')
+	let button = document.getElementById('submit')
+
+    mobileNumber.addEventListener('input', validateReg);
+    email.addEventListener('input', validateReg);
+
+    passOne.addEventListener('input', validateReg);
+    passTwo.addEventListener('input', validateReg);
+
+    function validateReg(e) {
+
+        let target = e.target;
+
+        if (target.name == 'email') {
+            let emailValidity = document.getElementById('emailValidText')
+            emailValidity.textContent = 'Please enter a valid email address'
+            emailValidity.classList.remove('valid')
+            emailValidity.classList.add('invalid')
+			button.disabled = true;
+
+            if (emailReg.test(target.value)) {
+                emailValidity.textContent = ''
+                emailValidity.classList.add('valid')
+                emailValidity.classList.remove('invalid')
+				button.disabled = false;
+            }
+        }
+        if (target.name == 'contact') {
+            let mobileValidity = document.getElementById('noMobileNumberText')
+            if (target.value >= 16000000 && target.value <= 17999999 || target.value >= 77000000 && target.value <= 77999999) {
+                mobileValidity.textContent = ''
+                mobileValidity.classList.add('valid')
+                mobileValidity.classList.remove('invalid')
+				button.disabled = true;
+            } else {
+                mobileValidity.textContent = 'Invalid mobile number. should start either with 17 or 77. Do not include "+975"'
+                mobileValidity.classList.remove('valid')
+                mobileValidity.classList.add('invalid')
+				button.disabled = false;
+            }
+		}
+        if (target.name == 'password') {
+            let passValidity = document.getElementById('password1ValidText')
+            if (passReg.test(target.value)) {
+                target.classList.add('valid')
+                target.classList.remove('invalid')
+                passValidity.textContent = 'Password Secured';
+                passValidity.classList.add('valid')
+                passValidity.classList.remove('invalid')
+				button.disabled = false;
+            } else {
+                target.classList.add('invalid')
+                target.classList.remove('valid')
+                passValidity.textContent = 'Password  must be at least 8 characters.';
+                passValidity.classList.remove('valid')
+                passValidity.classList.add('invalid')
+				button.disabled = true;
+            }
+        }
+        if (target.name == 'confirmPassword') {
+            let pass2Validity = document.getElementById('password2ValidText');
+            let pass1Value = document.getElementById('password').value;
+            if (target.value == pass1Value) {
+                pass2Validity.textContent = 'Passwords Matched';
+                pass2Validity.classList.add('valid')
+                pass2Validity.classList.remove('invalid')
+				button.disabled = false;
+            } else if (target.value == 0) {
+                pass2Validity.textContent = ''
+            } else {
+                pass2Validity.textContent = 'Your passwords do not match'
+                pass2Validity.classList.add('invalid')
+                pass2Validity.classList.remove('valid')
+				button.disabled = true;
+            }
+        }
+
+    }
+
+
+
+
+ </script>
+ <style>
+	.valid{
+  color:green !important;
+}
+ </style>
+
+	</body>
+</html>
+

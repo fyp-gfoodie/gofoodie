@@ -1,0 +1,245 @@
+{% extends './../base.html' %} {%load static%} {% block content %}
+<!-- Start Slider -->
+<div id="slides-shop" class="cover-slides">
+  <ul class="slides-container">
+    {% for item in top_ordered_food %}
+    <li class="text-center">
+      <img src="{{ item.menu_id__image }}" alt="{{ item.menu_id.item_name }}" />
+      <div class="container">
+        <div class="row">
+          <div class="col-md-12">
+            <h1 class="m-b-20">
+              <strong
+                >Welcome To <br />
+                GoFoodie</strong
+              >
+            </h1>
+            <p class="m-b-40">
+              {{ item.menu_id__item_name }}
+              <br />
+              Ready to satisfy your cravings? Sign in now and indulge in a
+              delightful feast!
+            </p>
+          </div>
+        </div>
+      </div>
+    </li>
+    {% endfor %}
+  </ul>
+  <div class="slides-navigation">
+    <a href="#" class="next"
+      ><i class="fa fa-angle-right" aria-hidden="true"></i
+    ></a>
+    <a href="#" class="prev"
+      ><i class="fa fa-angle-left" aria-hidden="true"></i
+    ></a>
+  </div>
+</div>
+<!-- End Slider -->
+
+<!-- Start Products  -->
+<div class="products-box">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-12">
+        <div class="title-all text-center">
+          <h1>Our Menus</h1>
+          <p>
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed sit
+            amet lacus enim.
+          </p>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-lg-12">
+        <div class="special-menu text-center">
+          <div class="button-group filter-button-group">
+            <button class="active" data-filter="*">All</button>
+            <button data-filter=".top-featured">Trending Item</button>
+            <button data-filter=".new-item">New Items</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row special-list">
+      {% for i in menu %}
+      <div
+        class="col-lg-3 col-md-6 special-grid {% if i.is_top_ordered %}top-featured{% elif i.is_new_item %}new-item{% endif %}"
+      >
+        <div class="products-single fix">
+          <div class="box-img-hover">
+            <div class="type-lb">
+              {% if i.is_new_item %}
+              <p class="new">New</p>
+              {% else %}
+              <p class="sale">Sale</p>
+              {% endif %}
+            </div>
+            <img src="{{i.image.url}}" alt="Image" height="250px" />
+            <div class="mask-icon">
+              {% if user.role == 'manager' %}
+              <ul>
+                <li>
+                  <a
+                    href="#"
+                    data-toggle="tooltip"
+                    data-placement="right"
+                    title="View"
+                    ><i class="fas fa-eye"></i
+                  ></a>
+                </li>
+                <li>
+                  <a
+                    href="#"
+                    data-toggle="tooltip"
+                    data-placement="right"
+                    title="Compare"
+                    ><i class="fas fa-sync-alt"></i
+                  ></a>
+                </li>
+                <li>
+                  <a
+                    href="#"
+                    data-toggle="tooltip"
+                    data-placement="right"
+                    title="Add to Wishlist"
+                    ><i class="far fa-heart"></i
+                  ></a>
+                </li>
+              </ul>
+              {% else %}
+              <div class="cart" style="position: absolute; bottom: 0">
+                <form action="" method="POST">
+                  {% csrf_token %}
+                  <a href="{% url 'signin' %}">
+                    <button
+                      type="button"
+                      class="cancel-order-btn"
+                      style="border: none"
+                    >
+                      Add to cart
+                    </button>
+                  </a>
+                </form>
+              </div>
+
+              {% endif %}
+            </div>
+          </div>
+          <div class="why-text">
+            <h4>{{i.item_name}}</h4>
+            <p>{{i.description}}</p>
+            <h5>Nu.{{i.price}}</h5>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+<!-- End Products  -->
+
+<!-- Start Blog  -->
+<div class="latest-blog">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-12">
+        <div class="title-all text-center">
+          <h1>Other Related Works</h1>
+          <p>
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed sit
+            amet lacus enim.
+          </p>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-6 col-lg-4 col-xl-4">
+        <div class="blog-box">
+          <div class="blog-img">
+            <img
+              class="img-fluid"
+              src="{% static 'images/swimming-pool.jpeg' %}"
+              alt=""
+            />
+          </div>
+          <div class="blog-content">
+            <div class="title-blog">
+              <h3>Swimming Pool</h3>
+              <p>
+                Nulla ut urna egestas, porta libero id, suscipit orci. Quisque
+                in lectus sit amet urna dignissim feugiat. Mauris molestie
+                egestas pharetra. Ut finibus cursus nunc sed mollis. Praesent
+                laoreet lacinia elit id lobortis.
+              </p>
+            </div>
+            <ul class="option-blog">
+              <li>
+                <a href="#"><i class="fas fa-eye"></i></a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6 col-lg-4 col-xl-4">
+        <div class="blog-box">
+          <div class="blog-img">
+            <img
+              class="img-fluid"
+              src="{% static 'images/swimming-pool.jpeg' %}"
+              alt=""
+            />
+          </div>
+          <div class="blog-content">
+            <div class="title-blog">
+              <h3>Swimming Pool</h3>
+              <p>
+                Nulla ut urna egestas, porta libero id, suscipit orci. Quisque
+                in lectus sit amet urna dignissim feugiat. Mauris molestie
+                egestas pharetra. Ut finibus cursus nunc sed mollis. Praesent
+                laoreet lacinia elit id lobortis.
+              </p>
+            </div>
+            <ul class="option-blog">
+              <li>
+                <a href="#"><i class="fas fa-eye"></i></a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6 col-lg-4 col-xl-4">
+        <div class="blog-box">
+          <div class="blog-img">
+            <img
+              class="img-fluid"
+              src="{% static 'images/swimming-pool.jpeg' %}"
+              alt=""
+            />
+          </div>
+          <div class="blog-content">
+            <div class="title-blog">
+              <h3>Swimming Pool</h3>
+              <p>
+                Nulla ut urna egestas, porta libero id, suscipit orci. Quisque
+                in lectus sit amet urna dignissim feugiat. Mauris molestie
+                egestas pharetra. Ut finibus cursus nunc sed mollis. Praesent
+                laoreet lacinia elit id lobortis.
+              </p>
+            </div>
+            <ul class="option-blog">
+              <li>
+                <a href="#"><i class="fas fa-eye"></i></a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- End Blog  -->
+
+{% endblock %}

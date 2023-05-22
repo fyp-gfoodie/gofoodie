@@ -1,0 +1,288 @@
+{% extends './../base.html' %}
+{% block content %}
+<!-- Start Shop Page  -->
+<div class="shop-box-inner">
+  <div class="container">
+    <div class="row">
+      <div class="col-xl-9 col-lg-9 col-sm-12 col-xs-12 shop-content-right">
+        <div class="right-product-box">
+          <div class="product-item-filter row">
+            <div class="col-12 col-sm-8 text-center text-sm-left">
+              <div class="toolbar-sorter-right">
+                <span>Sort by </span>
+                <form action="{% url 'menu' request.user.id %}" method="GET">
+                  <select
+                    id="basic"
+                    class="selectpicker show-tick form-control"
+                    data-placeholder="Nu. USD"
+                    name="sort_option"
+                    onchange="this.form.submit()"
+                  >
+                    <option data-display="Select" {% if sort_option == None %}selected{% endif %}>{{ sort_option }}</option>
+                    <option value="sortByOrders" {% if sort_option == 'sortByOrders' %}selected{% endif %}>Best Selling</option>
+                    <option value="HighToLow" {% if sort_option == 'HighToLow' %}selected{% endif %}>High Price → Low Price</option>
+                    <option value="LowToHigh" {% if sort_option == 'LowToHigh' %}selected{% endif %}>Low Price → High Price</option>
+                  </select>
+                </form>
+
+              </div>
+              <p>Showing all {{menu_per_page}} results</p>
+            </div>
+            <div class="col-12 col-sm-4 text-center text-sm-right">
+              <ul class="nav nav-tabs ml-auto">
+                <li>
+                  <a
+                    class="nav-link active"
+                    href="#grid-view"
+                    data-toggle="tab"
+                  >
+                    <i class="fa fa-th"></i>
+                  </a>
+                </li>
+                <li>
+                  <a class="nav-link" href="#list-view" data-toggle="tab">
+                    <i class="fa fa-list-ul"></i>
+                  </a>
+                </li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="product-categorie-box">
+            <div class="tab-content">
+              <div
+                role="tabpanel"
+                class="tab-pane fade show active"
+                id="grid-view"
+              >
+                <div class="row">
+                  {% for i in page %}
+                  <div class="col-sm-6 col-md-6 col-lg-4 col-xl-4">
+                    <div class="products-single fix">
+                      <div class="box-img-hover">
+                        <div class="type-lb">
+                          {% if i.is_new_item %}
+                          <p class="new">New</p>
+                          {% elif i.is_top_ordered %}
+                          <p class="sale">Sale</p>
+                          {% endif %}
+                        </div>
+                        <img src="{{i.image.url}}" alt="Image" height="250px" />
+                        <div class="mask-icon">
+                          {% if user.role == 'manager' %}
+                          <ul>
+                            <li>
+                              {% if i.is_seen == True %}
+                              <a
+                                href="{% url 'seen_true' user.pk i.pk  %}"
+                                data-toggle="tooltip"
+                                data-placement="right"
+                                title="View"
+                                ><i class="fas fa-eye"></i
+                              ></a>
+                              {% else %}
+                              <a
+                                href="{% url 'seen_false' user.pk i.pk  %}"
+                                data-toggle="tooltip"
+                                data-placement="right"
+                                title="View"
+                                ><i class="fas fa-eye"></i
+                              ></a>
+                              {% endif %}
+                            </li>
+                            <li>
+                              <a
+                                href="{% url 'update' user.pk i.pk%}"
+                                data-toggle="tooltip"
+                                data-placement="right"
+                                title="Edit"
+                                ><i class="fas fa-edit"></i
+                              ></a>
+                            </li>
+                            <li>
+                              <a
+                                href="{% url 'delete' user.pk i.pk%}"
+                                data-toggle="tooltip"
+                                data-placement="right"
+                                title="Edit"
+                                ><i class="fas fa-trash"></i
+                              ></a>
+
+                            </li>
+                          </ul>
+                          {%else%}
+                          <div
+                            class="cart"
+                            style="position: absolute; bottom: 0"
+                          >
+                            <form
+                              action="{% url 'order' user.pk i.pk %}"
+                              method="POST"
+                            >
+                              {% csrf_token %}
+                              <button
+                                type="submit"
+                                class="cancel-order-btn"
+                                style="border: none"
+                              >
+                                Add to cart
+                              </button>
+                            </form>
+                          </div>
+
+                          <!-- <a class="cart" href="{% url 'order' user.pk i.pk %}">Add to Cart</a> -->
+                          {% endif %}
+                        </div>
+                      </div>
+                      <div class="why-text">
+                        <h4>{{i.description}}</h4>
+                        <h5>Nu.{{i.price}}</h5>
+                      </div>
+                    </div>
+                  </div>
+                  {% endfor %}
+                </div>
+              </div>
+              <div role="tabpanel" class="tab-pane fade" id="list-view">
+                <div class="list-view-box">
+                  <div class="row">
+                    {% for i in page %}
+                    <div class="col-sm-6 col-md-6 col-lg-4 col-xl-4">
+                      <div class="products-single fix">
+                        <div class="box-img-hover">
+                          <div class="type-lb">
+                            {% if i.is_new_item %}
+                            <p class="new">New</p>
+                            {% elif i.is_top_ordered %}
+                            <p class="sale">Sale</p>
+                            {% endif %}
+                          </div>
+                          <img
+                            src="{{i.image.url}}"
+                            class="img-fluid"
+                            alt="Image"
+                          />
+                          <div class="mask-icon"></div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-sm-6 col-md-6 col-lg-8 col-xl-8">
+                      <div class="why-text full-width">
+                        <h4>{{i.item_name}}</h4>
+                        <h5>Nu. {{i.price}}</h5>
+                        <p>{{i.description}}</p>
+                        {% if user.role == 'customer' %}
+
+                        <form
+                          action="{% url 'order' user.pk i.pk %}"
+                          method="POST"
+                        >
+                          {% csrf_token %}
+                          <button
+                            type="submit"
+                            class="cancel-order-btn"
+                            style="border: none"
+                          >
+                            Add to cart
+                          </button>
+                        </form>
+
+                        {% endif %}
+                      </div>
+                    </div>
+                    {% endfor %}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-xl-3 col-lg-3 col-sm-12 col-xs-12 sidebar-shop-left">
+        <div class="product-categori">
+          {% if user.role == 'manager' %}
+          <div class="btn btn-warning">
+            <a href="{% url 'create_menu' user.pk %}"
+              ><i class="fa fa-plus-circle"></i>&nbsp; &nbsp;Add Menu</a
+            >
+          </div>
+          {% endif %}
+          <div class="filter-sidebar-left">
+            <div class="title-left">
+              <h3>Categories</h3>
+            </div>
+            <div
+              class="list-group list-group-collapse list-group-sm list-group-tree"
+              id="list-group-men"
+              data-children=".sub-men"
+            >
+              <div class="list-group-collapse sub-men">
+                <a
+                  class="list-group-item list-group-item-action"
+                  href="#sub-men1"
+                  data-toggle="collapse"
+                  aria-expanded="true"
+                  aria-controls="sub-men1"
+                  >Fast Foods <small class="text-muted">({{menu_count}})</small>
+                </a>
+                <div
+                  class="collapse show"
+                  id="sub-men1"
+                  data-parent="#list-group-men"
+                >
+                  <div class="list-group">
+                    {% comment %} {% if page.has_previous %}
+                    <a href="?page=1" class="list-group-item list-group-item-action active">&laquo; first</a>
+                    <a href="?page={{ page.previous_page_number }}" class="list-group-item list-group-item-action">previous</a>
+                  {% endif %} {% endcomment %}
+
+                  {% for page_num in page.paginator.page_range %}
+                    <a href="{% url 'menu' request.user.id %}?sort_option={{ sort_option }}&page={{ page_num }}" class="list-group-item list-group-item-action {% if page.number == page_num %}active{% endif %}">{{ page_num }}</a>
+                  {% endfor %}
+
+                  {% comment %} {% if page.has_next %}
+                    <a href="?page={{ page.next_page_number }}" class="list-group-item list-group-item-action">next</a>
+                    <a href="?page={{ page.paginator.num_pages }}" class="list-group-item list-group-item-action">last &raquo;</a>
+                  {% endif %} {% endcomment %}
+
+                  </div>
+                </div>
+              </div>
+              <div class="list-group-collapse sub-men">
+                <a
+                  class="list-group-item list-group-item-action"
+                  href="#sub-men2"
+                  data-toggle="collapse"
+                  aria-expanded="false"
+                  aria-controls="sub-men2"
+                  >Drinks
+                  <small class="text-muted">(50)</small>
+                </a>
+                <div
+                  class="collapse"
+                  id="sub-men2"
+                  data-parent="#list-group-men"
+                >
+                  <div class="list-group">
+                    <a href="#" class="list-group-item list-group-item-action"
+                      >Drinks 1 <small class="text-muted">(10)</small></a
+                    >
+                    <a href="#" class="list-group-item list-group-item-action"
+                      >Drinks 2 <small class="text-muted">(20)</small></a
+                    >
+                    <a href="#" class="list-group-item list-group-item-action"
+                      >Drinks 3 <small class="text-muted">(20)</small></a
+                    >
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- End Shop Page -->
+
+{% endblock %}

@@ -1,0 +1,13 @@
+/** ADD YOUR AWESOME CODES HERE **/
+.btn-custom {
+  background-color: #ff7a00; /* replace with your desired color code */
+  color: white;
+  transition: all 0.5s ease;
+}
+
+.btn-custom:hover {
+  background-color: #ffffff; /* replace with your desired color code */
+  transform: scale(1);
+  border-color: #ff7a00;
+  color: #ff7a00;
+}

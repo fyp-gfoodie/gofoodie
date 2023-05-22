@@ -1,0 +1,32 @@
+{% extends './../base.html' %}
+
+{% block content %}
+	<!---about--->
+	<br>
+	<section id="edit">
+		<div class="row">
+			<div class="col">
+				<div class="menuadd-img">
+					<img src="{{data.image.url}}" width="600px" height="400px">
+				</div>
+			</div>
+			<div class="col">
+				<div class="menuaddform">
+					<h2>Menu Update</h2>
+					<form action="" method="POST" enctype="multipart/form-data">
+						{% csrf_token %}
+						<input type="text" class="field form-control" placeholder="{{data.item_name}}" name="name"><br>
+						<input type="file" class="field form-control" name = 'image'><br>
+						<input type="number" class="field form-control" placeholder="{{data.price}}" name='price' ><br>
+						<textarea placeholder="{{data.description}}" class="field form-control" name="description" ></textarea><br>
+						<button type="submit" class="btn btn-warning">Update</button>
+					</form>
+				</div>
+			</div>
+		</div>
+
+
+
+	</section>
+	<br>
+{% endblock %}

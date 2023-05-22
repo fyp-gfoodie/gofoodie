@@ -1,0 +1,228 @@
+{% extends './../base.html' %}
+{% load static %}
+
+{% block css %}
+<style>
+    .order {
+      margin-bottom: 20px;
+      padding: 10px;
+      box-sizing: border-box;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+
+    .order-header {
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .order-items ul {
+      list-style-type: none;
+      margin: 0;
+      padding: 0;
+    }
+
+    .order-actions {
+      display: flex;
+      justify-content: flex-end;
+      margin-top: 10px;
+    }
+
+    .order-details {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 10px;
+    }
+
+    .cancel-order-btn {
+      background-color: #ff7a00;
+      color: white;
+      border: none;
+      padding: 10px 15px;
+      text-align: center;
+      text-decoration: none;
+      display: inline-block;
+      font-size: 16px;
+      margin-left: 10px;
+      cursor: pointer;
+      border-radius: 8px;
+    }
+
+    .btn-custom {
+      background-color: #ff7a00; /* replace with your desired color code */
+      color: white;
+      transition: all 0.5s ease;
+    }
+
+    .btn-custom:hover {
+      background-color: #ffffff; /* replace with your desired color code */
+      transform: scale(1);
+      border-color: #ff7a00;
+      color: #ff7a00;
+    }
+  </style>
+
+{% endblock %}
+
+{% block content %}
+<div class="latest-blog">
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-12">
+          <div class="title-all text-center">
+            <h1>My Orders</h1>
+          </div>
+        </div>
+      </div>
+      <p>Payment qr code: <a href="{% static 'images/qr.png' %}" style="text-decoration: underline; color: blue;" download>download</a></p>
+      <div class="row">
+        {% for order in make_orders %}
+        <div class="col-md-6 col-lg-4 col-xl-4">
+          <div class="blog-box">
+            <div class="orders-container">
+              <div class="order">
+                <div class="order-details">
+                  <ul>
+                    <li>
+                      <a href="#"><i class="fas fa-eye"></i></a>
+                    </li>
+                  </ul>
+                </div>
+                <div class="order-details">
+                  <span class="order-label">Order ID:</span>
+                  <span class="order-value">{{order.id}}</span>
+                </div>
+
+                <div class="order-details">
+                  <span class="order-label">Total:</span>
+                  <span class="order-value">Nu.{{order.bill}}</span>
+                </div>
+                <div id="status">
+                  <div class="order-status">
+                    {% if order.status == 'Waiting' or order.status == 'In_progress'  %}
+                  <p>
+                    Status:
+                    <span class="badge bg-warning" style="color: white"
+                      >{{ order.status }}</span
+                    >
+                  </p>
+                  {% elif order.status == 'Ready' %}
+                  <p>
+                    Status:
+                    <span class="badge" style="color: white; background-color: #ff7a00;"
+                      >{{ order.status }}</span
+                    >
+                  </p>
+                  {% elif order.status == 'Cancel' %}
+                  <p>
+                    Status:
+                    <span class="badge" style="color: white; background-color: #ff0000;"
+                      >{{ order.status }}</span
+                    >
+                  </p>
+                  {% else %}
+                  <p>
+                    Status:
+                    <span class="badge bg-danger" style="color: white; background-color: #ff7a00;"
+                      >{{ order.status }}</span
+                    >
+                  </p>
+                  {% endif %}
+                  </div>
+                </div>
+                <div id="action" class="order-actions">
+                  {% if order.status == 'Waiting' %}
+                    <form action="{% url 'cancel_order' user.pk order.pk %}">
+                      {% csrf_token %}
+                      <button type="submit" class="cancel-order-btn">Cancel Order</button>
+                    </form>
+                  {% elif order.status == 'Completed' %}
+                    {{order.payment_status}}
+                  {% elif order.status == 'Cancel' %}
+                    <p>
+                      Status:
+                      <span class="badge" style="color: white; background-color: #ff0000;"
+                        >Cancelled</span
+                      >
+                    </p>
+                  {% endif %}
+                  </div>
+                             <!--
+                    <button class="cancel-order-btn" data-target="#exampleModalToggle{{order.id}}" data-toggle="modal">Payment</button> -->
+
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="modal fade" id="exampleModalToggle{{order.id}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Make Payment</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                </div>
+                <form action="{% url 'payment' user.pk order.id%}" method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="modal-body">
+                    <div class="upload-files-container">
+                        <input type="file" name="scrn" class="form-control" required>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="form-control cancel-order-btn"> Upload </button>
+                </div>
+                </form>
+            </div>
+            </div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+
+  {% block script %}
+  {{ room_name|json_script:"room-name" }}
+  <script>
+  const notificationSocket = new WebSocket(
+              'ws://' + window.location.host + '/ws/notifications/'
+          );
+
+  notificationSocket.onmessage = function(e) {
+              const data = JSON.parse(e.data);
+              if (data.type === "notification") {
+                  // Handle the notification
+                const status = data.status
+                console.log('hello')
+                console.log(status)
+                if(status == 'In_progress'){
+                  console.log(status)
+                  document.getElementById('status').innerHTML = `<p>Status: <span class="badge bg-warning" style="color: white">In progress</span></p>`
+                  document.getElementById('action').innerHTML = `<p></p>`
+
+                }
+                else if(status == 'Ready'){
+                  document.getElementById('status').innerHTML = `<p>Status: <span class="badge" style="color: white; background-color: #ff7a00;">Ready</span></p>`
+
+                }
+                else{
+                  document.getElementById('status').innerHTML = `<p>Status: <span class="badge bg-danger" style="color: white">Declined</span></p>`
+
+                }
+
+              }
+          };
+
+  console.log(document.getElementById('status').innerHTML)
+
+  console.log('hello')
+
+  </script>
+  {% endblock %}
+
+
+
+
+{% endblock %}

@@ -1,0 +1,30 @@
+{% extends './../base.html' %}
+{% load static %}
+
+{% block content %}
+	<!---about--->
+	<br>
+	<section id="create_menu">
+		<div class="row">
+			<div class="col-6">
+				<div class="menuadd-img">
+					<img src="{% static 'images/all-bg-title.jpg'%}" width="600px" height="400px">
+				</div>
+			</div>
+			<div class="col-6">
+				<div class="menuaddform">
+					<h2>Menu Add</h2>
+					<form action="" method="POST" enctype="multipart/form-data">
+						{% csrf_token %}
+						<input type="text" class="field form-control" placeholder="Food Item" name="name"><br>
+						<input type="file" class="field form-control" placeholder="" name = 'image'><br>
+						<input type="number" class="field form-control" placeholder="Price" name = 'price' ><br>
+						<textarea placeholder="Description" class="field form-control" name="description" ></textarea><br>
+						<button type="submit" class="btn btn-warning">Add</button>
+					</form>
+				</div>
+			</div>
+		</div>
+	</section>
+	<br>
+{% endblock %}

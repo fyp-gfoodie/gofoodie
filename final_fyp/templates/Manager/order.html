@@ -1,0 +1,102 @@
+{% extends './../base.html' %}
+{% block content %}
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th scope="col">Order ID</th>
+      <th scope="col">Customer</th>
+      <th scope="col">Total Price</th>
+      <th scope="col">Status</th>
+      <th scope="col">Detail</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for i,j in orders_request %}
+    <tr>
+      <th scope="row">{{i.id}}</th>
+      <td>{{i.customer_id.first_name}} {{i.customer_id.last_name}}</td>
+      <td>{{i.bill}}</td>
+      <td>
+          <form action="{% url 'approval' user.pk %}" method="POST">
+            {% csrf_token %}
+            {% if i.status == 'Waiting' %}
+            <button type="submit" class="btn btn-success" name="accept" value="{{i.pk}}">Accept</button>
+            <button type="submit" class="btn btn-danger" name="decline" value="{{i.pk}}">Decline</button>
+            {% elif i.status == 'In_progress' %}
+            <button type="submit" class="btn btn-warning" name="ready" value="{{i.pk}}">Ready</button>
+            {% elif i.status == 'Declined' %}
+            Declined
+            {% elif i.status == 'Completed' %}
+              {%if i.payment_status == 'paid_by_online' %}
+                Journal: {{i.jrnl_no}}
+              {% else %}
+                Paid(Cash)
+              {% endif %}
+            {% elif i.status == 'Cancel' %}
+              Cancelled
+            {% else %}
+            <button type="submit" class="btn btn-warning" name="cash" value="{{i.pk}}">Payment(cash)</button>
+            <button type="button" data-toggle="modal" data-target="#payment{{i.id}}" class="btn btn-warning">Payment(online)</button>
+            {% endif %}
+          </form>
+
+      </td>
+      <td><a data-toggle="modal" data-target="#exampleModal{{i.id}}">view...</a></td>
+    </tr>
+    <!-- Modal -->
+    <div class="modal fade" id="exampleModal{{i.id}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Order Items: {{i.id}}</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <div class="row">
+              <div class="col">
+                Item name
+              </div>
+              <div class="col">
+                Price
+              </div>
+            </div>
+            {% for items in j %}
+                <div class="row">
+                  <div class="col">{{items.item_name}}</div>
+                  <div class="col">{{items.price}}</div>
+                </div>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal fade" id="payment{{i.id}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Order Items: {{i.id}}</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+
+          <div class="modal-body">
+            <form action="{% url 'payment' user.pk i.pk %}" method="POST">
+              {% csrf_token %}
+            <input type="text" name="jrnl_no" class="form-control">
+            <button type="type" class="btn btn-warning" name="online">Make payment</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </tbody>
+</table>
+
+
+
+{% endblock %}

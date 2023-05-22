@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+  <!-- Basic -->
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+
+    <!-- Mobile Metas -->
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <!-- Site Metas -->
+    <title>GoFoodie-Order Now</title>
+    <meta name="keywords" content="" />
+    <meta name="description" content="" />
+    <meta name="author" content="" />
+
+    <!-- Site Icons -->
+    <link rel="shortcut icon" href="{% static 'images/white.png' %}" type="image/x-icon" />
+    <link rel="apple-touch-icon" href="{% static 'images/apple-touch-icon.png' %}" />
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/css/alertify.min.css"/>
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}" />
+    <!-- Site CSS -->
+    <link rel="stylesheet" href="{% static 'css/style.css' %}" />
+    <!-- Responsive CSS -->
+    <link rel="stylesheet" href="{% static 'css/responsive.css' %}" />
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{% static 'css/custom.css'%}" />
+
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+
+{% block css %}
+
+{% endblock %}
+  <body>
+     <!-- Start Main Top -->
+     <div class="main-top">
+      <div class="container-fluid">
+        <div class="row">
+          <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+            <div class="right-phone-box">
+              <p>Call US :- <a> +975-17859472</a></p>
+            </div>
+            <div class="our-link">
+              <ul>
+                <li>
+                  <a href="contact-us.html"
+                    ><i class="fas fa-headset"></i> Contact Us</a
+                  >
+                </li>
+              </ul>
+            </div>
+          </div>
+          {% if user.is_authenticated %}
+          <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+
+              <li class="nav-item dropdown">
+                <a
+                  class="nav-link dropdown-toggle login-box"
+                  href="#"
+                  id="navbarDropdown"
+                  role="button"
+                  data-toggle="dropdown"
+                  aria-haspopup="true"
+                  aria-expanded="false"
+                  style="padding:0 1rem"
+                >
+                  <i class="fa fa-user s_color" style="color: white;"></i>
+                </a>
+                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                  <div class="dropdown-item">
+                    <i class="fa fa-user s_color"></i> {{user.first_name}} {{user.last_name}}
+                  </div>
+                  <hr>
+                  <a class="dropdown-item" href="{% url 'profile' user.pk %}"
+                    >Profile</a
+                  >
+                  <a
+                    class="dropdown-item"
+                    href="{% url 'logout'%}"
+                    >Logout</a
+                  >
+              </li>
+
+            <div class="text-slid-box">
+              <div id="offer-box" class="carouselTicker">
+                <ul class="offer-box">
+                  <li>
+                    <i class="fab fa-opencart"></i> Skip the wait, order your
+                    plate!
+                  </li>
+                  <li>
+                    <i class="fab fa-opencart"></i> Hungry? We've got you
+                    covered!
+                  </li>
+                  <li>
+                    <i class="fab fa-opencart"></i> Experience gastronomic bliss
+                    in every bite.
+                  </li>
+                  <li><i class="fab fa-opencart"></i>Order, eat, repeat.</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+    <!-- End Main Top -->
+    <!-- Start Main Top -->
+    <header class="main-header">
+      <!-- Start Navigation -->
+      <nav
+        class="navbar navbar-expand-lg navbar-light bg-light navbar-default bootsnav">
+        <div class="container">
+          <!-- Start Header Navigation -->
+
+          <div class="navbar-header">
+            {% if user.is_authenticated %}
+            <button
+              class="navbar-toggler"
+              type="button"
+              data-toggle="collapse"
+              data-target="#navbar-menu"
+              aria-controls="navbars-rs-food"
+              aria-expanded="false"
+              aria-label="Toggle navigation"
+            >
+              <i class="fa fa-bars"></i>
+            </button>
+            {% endif %}
+            <a class="navbar-brand" href="{% url 'dashboard' user.pk %}"
+              ><img src="{% static 'images/FYP_Logo.png' %}" width="140" class="logo" alt=""
+            /></a>
+          </div>
+          <!-- End Header Navigation -->
+
+          <!-- Collect the nav links, forms, and other content for toggling -->
+          {% if user.is_authenticated %}
+           {% if user.role == 'customer' %}
+            <div class="collapse navbar-collapse" id="navbar-menu">
+              <ul
+                class="nav navbar-nav ml-auto"
+                data-in="fadeInDown"
+                data-out="fadeOutUp"
+              >
+                <li class="nav-item">
+                  <a class="nav-link" href="{% url 'dashboard' user.pk %}">Home</a>
+                </li>
+
+                <li class="nav-item">
+                  <a class="nav-link" href="{% url 'menu' user.pk %}">Menus</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="{% url 'orders' user.pk%}">Orders</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="{% url 'about' user.pk %}">About Us</a>
+                </li>
+              </ul>
+
+            </div>
+            {% else %}
+            <div class="collapse navbar-collapse" id="navbar-menu">
+              <ul
+                class="nav navbar-nav ml-auto"
+                data-in="fadeInDown"
+                data-out="fadeOutUp"
+              >
+                <li class="nav-item">
+                  <a class="nav-link" href="{% url 'dashboard' user.pk %}">Home</a>
+                </li>
+
+                <li class="nav-item">
+                  <a class="nav-link" href="{% url 'menu' user.pk %}">Menus</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="{% url 'manage_order' user.pk%}">Orders</a>
+                </li>
+              </ul>
+
+            </div>
+            {% endif %}
+          <!-- /.navbar-collapse -->
+
+          <!-- Start Atribute Navigation -->
+          <div class="attr-nav">
+            <ul>
+              <li class="search">
+                <a href="#"><i class="fa fa-search"></i></a>
+              </li>
+              {% if user.role == 'customer' %}
+                <li class="side-menu">
+                  <a href="#">
+                    <i class="fa fa-shopping-bag"></i>
+                    <span class="badge">{{count}}</span>
+                    <p>My Cart</p>
+                  </a>
+                </li>
+
+              <li class="side-menu1">
+                <a href="#">
+                  <i class="fa fa-bell"></i>
+                  <span id="badge" class="badge">0</span>
+                </a>
+              </li>
+              {%else %}
+              <li class="side-menu1">
+                <a href="#">
+                  <i class="fa fa-bell"></i>
+                  <span id="badgemanager" class="badge">0</span>
+                </a>
+              </li>
+              {% endif %}
+            </ul>
+          </div>
+          <!-- End Atribute Navigation -->
+        </div>
+
+        </div>
+        {% else %}
+            <div  class='d-flex position-relative'>
+                <a href="{% url 'signup'%}"><button class="btn btn-dark" >Sign Up</button></a>
+                <a href="{% url 'signin'%}"style="margin-left:10px;"><button class="btn btn-dark">Sign In</button></a>
+            </div>
+        {% endif %}
+        <!-- Start Side Menu -->
+        <div class="side">
+          <a href="#" class="close-side"><i class="fa fa-times"></i></a>
+          <li class="cart-box">
+            <ul class="cart-list">
+              {% for i in orders %}
+              <li>
+                <a href="#" class="photo"
+                  ><img src="{{i.image.url}}" class="cart-thumb" alt=""
+                /></a>
+                <h6><a href="#">{{i.item_name}} </a></h6>
+                <p><span class="price">{{i.price}}</span></p>
+              </li>
+              {% endfor %}
+              <li>
+                <span class="float-right"
+                  ><strong>Total</strong>: Nu.{{total}}</span
+                >
+              </li>
+              <li class="total">
+                <a href="{% url 'cart' user.pk%}" class="btn btn-default hvr-hover btn-cart"
+                  >VIEW CART</a
+                >
+              </li>
+            </ul>
+          </li>
+        </div>
+        {% if user.role == 'customer' %}
+        <div class="side1">
+          <a href="#" class="close-side"><i class="fa fa-times"></i></a>
+          <li class="cart-box">
+            <ul id="notification" class="cart-list">
+            </ul>
+          </li>
+        </div>
+        {% else %}
+        <div class="side1">
+          <a href="#" class="close-side"><i class="fa fa-times"></i></a>
+          <li class="cart-box">
+            <ul class="cart-list" id="notify_manager">
+            </ul>
+          </li>
+        </div>
+        {% endif %}
+        <!-- End Side Menu -->
+      </nav>
+      <!-- End Navigation -->
+    </header>
+    <!-- End Main Top -->
+
+    <!-- Start Top Search -->
+    <form action="{% url 'search' user.pk %}" method="POST">
+      {% csrf_token %}
+      <div class="top-search">
+        <div class="container">
+          <div class="input-group">
+            <button style="border: none; background-color: black;" type="submit"><span class="input-group-addon"><i class="fa fa-search"></i></span></button>
+              <input type="text" name="name" class="form-control" placeholder="Search" />
+              <span class="input-group-addon close-search"
+                ><i class="fa fa-times"></i
+              ></span>
+          </div>
+        </div>
+      </div>
+  </form>
+    <!-- End Top Search -->
+     {%  block content %}
+
+
+     {% endblock %}
+
+       <!-- Start Instagram Feed  -->
+  <div class="instagram-box">
+    <div class="main-instagram owl-carousel owl-theme">
+      <div class="item">
+        <div class="ins-inner-box">
+          <img src="{% static 'images/banner-03.jpg' %}" alt="" />
+          <div class="hov-in">
+            <a href="#"><i class="fab fa-instagram"></i></a>
+          </div>
+        </div>
+      </div>
+      <div class="item">
+        <div class="ins-inner-box">
+          <img src="{% static 'images/banner-01.jpeg'%}" alt="" />
+          <div class="hov-in">
+            <a href="#"><i class="fab fa-instagram"></i></a>
+          </div>
+        </div>
+      </div>
+      <div class="item">
+        <div class="ins-inner-box">
+          <img src="{% static 'images/banner-02.jpg'%}" alt="" />
+          <div class="hov-in">
+            <a href="#"><i class="fab fa-instagram"></i></a>
+          </div>
+        </div>
+      </div>
+      <div class="item">
+        <div class="ins-inner-box">
+          <img src="{% static 'images/banner-03.jpg' %}" alt="" />
+          <div class="hov-in">
+            <a href="#"><i class="fab fa-instagram"></i></a>
+          </div>
+        </div>
+      </div>
+      <div class="item">
+        <div class="ins-inner-box">
+          <img src="images/chicken.jpg" alt="" />
+          <div class="hov-in">
+            <a href="#"><i class="fab fa-instagram"></i></a>
+          </div>
+        </div>
+      </div>
+      <div class="item">
+        <div class="ins-inner-box">
+          <img src="images/banner-03.jpg" alt="" />
+          <div class="hov-in">
+            <a href="#"><i class="fab fa-instagram"></i></a>
+          </div>
+        </div>
+      </div>
+      <div class="item">
+        <div class="ins-inner-box">
+          <img src="images/chicken.jpg" alt="" />
+          <div class="hov-in">
+            <a href="#"><i class="fab fa-instagram"></i></a>
+          </div>
+        </div>
+      </div>
+      <div class="item">
+        <div class="ins-inner-box">
+          <img src="images/banner-03.jpg" alt="" />
+          <div class="hov-in">
+            <a href="#"><i class="fab fa-instagram"></i></a>
+          </div>
+        </div>
+      </div>
+      <div class="item">
+        <div class="ins-inner-box">
+          <img src="images/banner-02.jpg" alt="" />
+          <div class="hov-in">
+            <a href="#"><i class="fab fa-instagram"></i></a>
+          </div>
+        </div>
+      </div>
+      <div class="item">
+        <div class="ins-inner-box">
+          <img src="images/chicken.jpg" alt="" />
+          <div class="hov-in">
+            <a href="#"><i class="fab fa-instagram"></i></a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- End Instagram Feed  -->
+    <!-- Start Footer  -->
+    <footer>
+      <div class="footer-main">
+        <div class="container">
+          <div class="row">
+            <div class="col-lg-4 col-md-12 col-sm-12">
+              <div class="footer-widget">
+                <h4>GoFoodie</h4>
+                <img
+                  src="{% static 'images/white.png' %}"
+                  alt="logo"
+                  width="140"
+                  style="border-radius: 100%"
+                />at your service.
+              </div>
+            </div>
+
+            <div class="col-lg-4 col-md-12 col-sm-12">
+              <div class="footer-link-contact">
+                <h4>Contact Us</h4>
+                <ul>
+                  <li>
+                    <p>
+                      <i class="fas fa-map-marker-alt"></i>Address: Mongar,
+                      Gyalpozhing
+                    </p>
+                  </li>
+                  <li>
+                    <p>
+                      <i class="fas fa-phone-square"></i>Phone:
+                      <a href="tel:+975-17485343">+975-17485343</a>
+                    </p>
+                  </li>
+                  <li>
+                    <p>
+                      <i class="fas fa-envelope"></i>Email:
+                      <a href="mailto:wangmowangmo@gmail.com"
+                        >wangmowangmo@gmail.com</a
+                      >
+                    </p>
+                  </li>
+                </ul>
+              </div>
+            </div>
+            <div class="col-lg-4 col-md-12 col-sm-12">
+              <div class="footer-top-box">
+                <h4>Social Media</h4>
+                <p>Do follow our Social pages from the link below.</p>
+                <ul>
+                  <li>
+                    <a href="#"
+                      ><i class="fab fa-facebook" aria-hidden="true"></i
+                    ></a>
+                  </li>
+                  <li>
+                    <a href="#"
+                      ><i class="fab fa-instagram" aria-hidden="true"></i
+                    ></a>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+          <hr />
+        </div>
+      </div>
+    </footer>
+    <!-- End Footer  -->
+
+    <!-- Start copyright  -->
+    <div class="footer-copyright">
+      <p class="footer-company">
+        All Rights Reserved. &copy; 2024 <a href="#">GoFoodie</a>
+      </p>
+    </div>
+    <!-- End copyright  -->
+
+    <a href="#" id="back-to-top" title="Back to top" style="display: none"
+      >&uarr;</a
+    >
+
+
+    <!-- ALL JS FILES -->
+    <script src="{% static 'js/jquery-3.2.1.min.js'%}"></script>
+    <script src="{% static  'js/popper.min.js' %}"></script>
+    <script src="{% static  'js/bootstrap.min.js' %}"></script>
+    <!-- ALL PLUGINS -->
+    <script src="{% static  'js/jquery.superslides.min.js' %}"></script>
+    <script src="{% static  'js/bootstrap-select.js' %}"></script>
+    <script src="{% static  'js/inewsticker.js' %}"></script>
+    <script src="{% static  'js/bootsnav.js' %}"></script>
+    <script src="{% static  'js/images-loded.min.js' %}"></script>
+    <script src="{% static  'js/isotope.min.js' %}"></script>
+    <script src="{% static  'js/owl.carousel.min.js' %}"></script>
+    <script src="{% static  'js/baguetteBox.min.js' %}"></script>
+    <script src="{% static  'js/form-validator.min.js' %}"></script>
+    <script src="{% static  'js/contact-form-script.js' %}"></script>
+    <script src="{% static  'js/custom.js' %}"></script>
+    <script src="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/alertify.min.js"></script>
+
+    <!-- Initialize Swiper -->
+
+{{ room_name|json_script:"room-name" }}
+<script>
+  const notificationSocket = new WebSocket(
+              'ws://' + window.location.host + '/ws/notifications/'
+          );
+
+  notificationSocket.onmessage = function(e) {
+              const data = JSON.parse(e.data);
+              if (data.type === "notification") {
+                  // Handle the notification
+                const message = data.message;
+                const approval = data.customer;
+                console.log(message)
+                if (message){
+                  console.log(parseInt(document.getElementById('badgemanager')))
+                  document.getElementById('badgemanager').innerHTML = parseInt(document.getElementById('badgemanager').innerHTML) + 1;
+                  document.getElementById('notify_manager').innerHTML += `<li><a href="{% url 'manage_order' user.pk %}"><p><span class="price">'`+message+`'</span></p></a></li>`
+                }
+                if(approval){
+                  document.getElementById('badge').innerHTML = parseInt(document.getElementById('badge').innerHTML) + 1;
+                  document.getElementById('notification').innerHTML += `<li><a href="{% url 'orders' user.pk %}"><p><span class="price">'`+approval+`'</span></p></a></li>`
+                }
+              }
+          };
+
+  // notificationSocket.onclose = function(e) {
+  //             console.error('Notification socket closed unexpectedly');
+  //         };
+
+
+
+
+// Get all the plus and minus buttons
+function adjustQuantity(menu_id, price, type) {
+   var input = document.getElementById(menu_id);
+   var currentValue = parseInt(input.value);
+   var total = parseInt(document.getElementById('total').value);
+
+   if (type === 'plus') {
+     var newValue = currentValue + 1;
+     var newPrice = parseInt(price) * newValue
+     document.getElementById('amount'+menu_id).innerHTML = newPrice;
+     total += parseInt(price);
+
+   } else {
+     var newValue = currentValue - 1;
+     var amount = parseInt(document.getElementById('amount'+menu_id).innerHTML)
+     document.getElementById('amount'+menu_id).innerHTML = amount - price ;
+     total -= price;
+   }
+   if (newValue >= 0) {
+     input.value = newValue;
+   }
+   document.getElementById('total').value = total
+ }
+
+ " {% for flashmsg in messages %}"
+    alertify.set('notifier','position', 'top-center');
+    "{% if flashmsg.tags == 'success' %}"
+        alertify.success('{{ flashmsg }}');
+   " {% else %}"
+        alertify.error('{{ flashmsg }}');
+    "{% endif %}"
+"	{% endfor %}"
+
+  </script>
+  <style>
+    /* Add the CSS class for alertify notifications */
+    .alertify-notifier .ajs-message {
+        color: white;
+    }
+</style>
+  {% block script %}
+
+  {% endblock %}
+  </body>
+</html>
