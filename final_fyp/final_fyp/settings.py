@@ -97,24 +97,24 @@ ASGI_APPLICATION = 'final_fyp.asgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'djongo',
-#         'CLIENT': {
-#             "host":"mongodb+srv://fyp:fyp@cluster0.vhaucyj.mongodb.net/?retryWrites=true&w=majority",
-#             "name":"food-ordering",
-#             "authMechanism":"SCRAM-SHA-1" #For atlas cloud db
-#         }
-#     }
-# }
-
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-       }
-
+        'ENGINE': 'djongo',
+        'CLIENT': {
+            "host":"mongodb+srv://fyp:fyp@cluster0.vhaucyj.mongodb.net/?retryWrites=true&w=majority",
+            "name":"food-ordering",
+            "authMechanism":"SCRAM-SHA-1" #For atlas cloud db
+        }
+    }
 }
+
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': BASE_DIR / 'db.sqlite3',
+#        }
+
+# }
 
 
 # Password validation
